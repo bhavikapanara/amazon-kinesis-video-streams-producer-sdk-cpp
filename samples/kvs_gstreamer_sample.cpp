@@ -46,7 +46,7 @@ LOGGER_TAG("com.amazonaws.kinesis.video.gstreamer");
 #define DEFAULT_CONNECTION_STALENESS_SECONDS 60
 #define DEFAULT_CODEC_ID "V_MPEG4/ISO/AVC"
 #define DEFAULT_TRACKNAME "kinesis_video"
-#define DEFAULT_FRAME_DURATION_MS 1
+#define DEFAULT_FRAME_DURATION_MS 10
 #define DEFAULT_CREDENTIAL_ROTATION_SECONDS 3600
 #define DEFAULT_CREDENTIAL_EXPIRATION_SECONDS 180
 
@@ -317,7 +317,8 @@ void create_kinesis_video_frame(Frame *frame, const nanoseconds &pts, const nano
     frame->decodingTs = static_cast<UINT64>(dts.count()) / DEFAULT_TIME_UNIT_IN_NANOS;
     frame->presentationTs = static_cast<UINT64>(pts.count()) / DEFAULT_TIME_UNIT_IN_NANOS;
     // set duration to 0 due to potential high spew from rtsp streams
-    frame->duration = 0;
+    frame->duration = DEFAULT_FRAME_DURATION_MS * HUNDREDS_OF_NANOS_IN_A_MILLISECOND;
+    //frame->duration = 0; ---- change by bhavika ------- 
     frame->size = static_cast<UINT32>(len);
     frame->frameData = reinterpret_cast<PBYTE>(data);
     frame->trackId = DEFAULT_TRACK_ID;
